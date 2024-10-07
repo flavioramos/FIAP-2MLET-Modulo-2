@@ -7,6 +7,8 @@ from tqdm import tqdm
 
 output_file = ""
 date_string = ""
+access_key_id = ""
+secret_access_key = ""
 
 def download_b3_zip():
     global output_file
@@ -73,31 +75,38 @@ def upload_to_s3(access_key, secret_key):
         sys.exit(1)
 
 
+def check_csv_file():
+    global access_key_id
+    global secret_access_key
 
-# check for file argument
-if len(sys.argv) != 2:
-    print("Usage: python b3-scrapper.py <path_to_csv_file>")
-    sys.exit(1)
-
-file_path = sys.argv[1]
-
-# check if file exists
-if not os.path.isfile(file_path):
-    print(f"File not found: {file_path}")
-    sys.exit(1)
-
-# check if csv is kinda valid
-with open(file_path, 'r') as file:
-    lines = file.readlines()
-    if len(lines) < 2:
-        print("CSV file is not in the correct format or is missing data")
+    # check for file argument
+    if len(sys.argv) != 2:
+        print("Usage: python b3-scrapper.py <path_to_csv_file>")
         sys.exit(1)
 
-# read credentials
-with open(file_path, 'r') as file:
-    lines = file.readlines()
-    access_key_id, secret_access_key = lines[1].strip().split(',')
+    file_path = sys.argv[1]
 
-# do work
+    # check if file exists
+    if not os.path.isfile(file_path):
+        print(f"File not found: {file_path}")
+        sys.exit(1)
+
+    # check if csv is kinda valid
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        if len(lines) < 2:
+            print("CSV file is not in the correct format or is missing data")
+            sys.exit(1)
+
+    # read credentials
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        access_key_id, secret_access_key = lines[1].strip().split(',')
+
+
+
+
+
+check_csv_file()
 download_b3_zip()
 upload_to_s3(access_key_id, secret_access_key)
