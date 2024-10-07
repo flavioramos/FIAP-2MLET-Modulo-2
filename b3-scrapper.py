@@ -46,13 +46,16 @@ def download_b3_zip():
             file.write(data)
             bar.update(len(data))
 
-def upload_to_s3(access_key, secret_key):
+def upload_to_s3():
+    global access_key_id
+    global secret_access_key
+
     bucket = "fiap-2024-flavio-mlet"
     prefix = "zip"
 
     session = boto3.Session(
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key
     )
     s3_client = session.client('s3')
 
@@ -109,4 +112,4 @@ def check_csv_file():
 
 check_csv_file()
 download_b3_zip()
-upload_to_s3(access_key_id, secret_access_key)
+upload_to_s3()
