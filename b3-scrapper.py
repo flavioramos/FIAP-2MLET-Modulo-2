@@ -96,7 +96,8 @@ def generate_parquet():
         csv_filename = zip_ref.namelist()[0]
         with zip_ref.open(csv_filename) as csv_file:
             # read into pandas
-            df = pd.read_csv(csv_file)
+            df = pd.read_csv(csv_file, sep=';')
+            print(df)
 
     # save parquet
     print(f'Generating {date_string}.parquet ...')
@@ -138,4 +139,4 @@ def upload_to_s3():
 check_csv_file()
 download_b3_zip()
 generate_parquet()
-upload_to_s3()
+# upload_to_s3()
