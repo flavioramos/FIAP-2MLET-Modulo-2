@@ -83,7 +83,7 @@ def download_b3_zip():
 def generate_parquet():
     global output_parquet_file
     
-    parquets_dir = f'{os.getcwd()}/parquets'
+    parquets_dir = f'{os.getcwd()}/raw'
     output_parquet_file = f'{parquets_dir}/{date_string}.parquet'
 
     # check for /parquets dir
