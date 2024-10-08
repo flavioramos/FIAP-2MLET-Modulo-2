@@ -139,4 +139,4 @@ def upload_to_s3():
 check_csv_file()
 download_b3_zip()
 generate_parquet()
-# upload_to_s3()
+upload_to_s3()
