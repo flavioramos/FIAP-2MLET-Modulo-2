@@ -1,6 +1,8 @@
 .idea
 downloads/
 parquets/
+parquet/
+bin/
 *.csv
 
 # Created by https://www.toptal.com/developers/gitignore/api/flask
@@ -11,6 +13,7 @@ instance/*
 !instance/.gitignore
 .webassets-cache
 .env
+*.cfg
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
