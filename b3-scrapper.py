@@ -72,12 +72,14 @@ def process_csv():
 
     date = lines[0].split(' ')[-1]
 
-    lines[1] = f'Data;{lines[1]}'
+    lines[1] = f'Data;Codigo;Acao;Tipo;QuantTeorica;Partic'
 
     lines = lines[1:-2]
 
     for i in range(1, len(lines)):
-        lines[i] = f'{date};{lines[i]}'
+        lines[i] = f'{date};{lines[i][:-1]}'
+        lines[i] = lines[i].replace(".", "")
+        lines[i] = lines[i].replace(",", ".")
 
     csv_data = '\n'.join(lines)
 
@@ -100,6 +102,38 @@ def generate_parquet():
     # save parquet
     print(f'Generating bovespa.parquet ...')
     df.to_parquet(output_parquet_file, index=False)
+
+def clear_s3():
+    global access_key_id
+    global secret_access_key
+    global output_parquet_file
+
+    bucket = "fiap-flavio-mlet-modulo-2"
+    prefix = "raw"
+
+    session = boto3.Session(
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key
+    )
+    s3_client = session.client('s3')
+
+
+    paginator = s3_client.get_paginator('list_objects_v2')
+
+    found = False
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
+        for obj in page.get('Contents', []):
+            if obj['Key'] == f'{prefix}/bovespa.parquet':
+                found = True
+
+    if found:
+        print("File already exists, deleting...")
+        s3_client.delete_object(Bucket=bucket, Key=f'{prefix}/bovespa.parquet')
+    else:
+        print("S3 clear, proceed to upload.")
+
+
+
 
 def upload_to_s3():
     global access_key_id
@@ -138,4 +172,5 @@ check_csv_file()
 download_csv()
 process_csv()
 generate_parquet()
+clear_s3()
 upload_to_s3()
