@@ -1,4 +1,3 @@
-import datetime
 import requests
 import sys
 import os
@@ -8,7 +7,10 @@ import pandas as pd
 import base64
 import csv
 import io
+
 from tqdm import tqdm
+from datetime import datetime
+
 
 parquets_dir = ""
 output_parquet_file = ""
@@ -70,7 +72,11 @@ def process_csv():
 
     lines = csv_data.strip().split('\r\n')
 
-    date = lines[0].split(' ')[-1]
+    date_string = lines[0].split(' ')[-1]
+
+    date_object = datetime.strptime(date_string, "%d/%m/%y")
+
+    date = date_object.strftime("%Y-%m-%d")
 
     lines[1] = f'Data;Codigo;Acao;Tipo;QuantTeorica;Partic'
 
@@ -140,7 +146,7 @@ def upload_to_s3():
     global secret_access_key
     global output_parquet_file
 
-    bucket = "fiap-flavio-mlet-modulo-2"
+    bucket = "fiap-flavio-mlet"
     prefix = "raw"
 
     session = boto3.Session(
